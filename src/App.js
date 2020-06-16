@@ -1,47 +1,48 @@
-import React, { useState } from 'react';
-import Table from "./components/common/Table";
-import Form from './components/common/Form'
-
-// import './App.css';
+import React from 'react';
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+  } from "react-router-dom";
+import Navbar from "./components/common/Navbar";
+import PeoplePage from "./pages/PeoplePage.js";
+import PlanetsPage from "./pages/PlanetsPage.js";
+import StarshipsPage from "./pages/StarshipsPage.js";
 import 'bootstrap/dist/css/bootstrap.css';
 
-const data = [
-    {first: 'Mark', last: 'Otto', handle: '@motto', id: '1'},
-    {first: 'Carl', last: 'Reno', handle: '@ceno', id: '2'},
-    {first: 'Steve', last: 'Smith', handle: '@ssteve', id: '3'}
+const routes=[
+    {
+        path: "/people",
+        component: PeoplePage,
+        linkTitle: "People"
+    },
+    {
+        path:"/planets",
+        component: PlanetsPage,
+        linkTitle: "Planets"
+    },
+    {
+        path:"/starships",
+        component: StarshipsPage,
+        linkTitle: "Starships"
+    }
 ]
 
-const columns = Object.keys(data[0]);
-
 function App() {
-    const [people, setPeople] = useState(data);
-    console.log(people);
-
-    const handleAppPerson = (personData) => {
-        const data = [...people, personData];
-        setPeople(data)
-    }
-
-    const getInitialPeopleData = () => {
-        return columns.reduce((cols, columnName) => {
-            cols[columnName] = "";
-            return cols;
-        }, {})
-    }
-
     return (
-        <div className="container">
-            <Table
-                data={people}
-                columns={columns}
-                tableDescriptor="People"
+        <Router>
+            <Navbar
+                routes={routes}
             />
-            <Form
-                initialData={getInitialPeopleData()}
-                columns={columns}
-                onAddData={handleAppPerson}
-            />
-        </div>
+        
+            <Switch>
+                {routes.map((route, i) => (
+                    <Route key={i} path={route.path}>
+                        {route.component}
+                    </Route>
+                ))}
+            </Switch>
+        </Router>
     );
 }
 
