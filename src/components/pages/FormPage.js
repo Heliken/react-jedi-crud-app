@@ -1,5 +1,6 @@
 import React from 'react';
 import Form from "../common/Form";
+const Joi = require('@hapi/joi');
 
 const FormPage = ({history, match, }) => {
     const defaultFields={
@@ -25,20 +26,35 @@ const FormPage = ({history, match, }) => {
         formTemplate = storageResponse.filter(item => item.id === id)[0]
     }
 
+    const validationSchema = Joi.object({
+        name: Joi.string()
+            .min(0)
+            .required(),
+        gender: Joi.string(),
+        diameter: Joi.number().positive(),
+        height: Joi.number().positive()
+    }).unknown(true);
+
     const title = isNewUnit ? `Add new unit to ${descriptor}`  : `Edit ${formTemplate.name}`
 
     const saveChanges = (unit) => {
+        
         const data = isNewUnit ? [...storageResponse, unit] : storageResponse.map(x => x.id === unit.id ? unit : x )
         localStorage.setItem(descriptor, JSON.stringify(data))
         history.goBack()        
     }
+    const validateData = (unit) => {
+        const { error, value } = validationSchema.validate(unit);
+        error !== undefined ? alert(error) : saveChanges(value)
+    }
+    
     return (
         <div className="container">
             <h1>{title}</h1>
             <Form
                 initialData={formTemplate}
                 columns={columns}
-                onAddData={saveChanges}
+                onAddData={validateData}
             />
         </div>
     );

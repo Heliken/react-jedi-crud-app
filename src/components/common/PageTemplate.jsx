@@ -7,6 +7,7 @@ const PageTemplate = ({title, tableDescriptor, buttonLabel, apiCallFunc}) => {
     
     const [tableData, setData] = useState([]);
     const lowerCaseDescriptor = tableDescriptor.toLowerCase();
+    
     useEffect( () => {
         const localData=JSON.parse(localStorage.getItem(lowerCaseDescriptor));
         if(localData !== null){
@@ -21,12 +22,7 @@ const PageTemplate = ({title, tableDescriptor, buttonLabel, apiCallFunc}) => {
             getData();
         }
     }, [apiCallFunc, lowerCaseDescriptor, tableDescriptor])
-    /*
-    const handleAddUnit = (personData) => {
-        const data = [...tableData, personData];
-        setData(data)
-    }
-    */
+    
     const handleRemoveUnit = (item) => {
         const localData = JSON.parse(localStorage.getItem(lowerCaseDescriptor));
         let data = localData.filter(row => row.id !== item.id);
@@ -41,7 +37,7 @@ const PageTemplate = ({title, tableDescriptor, buttonLabel, apiCallFunc}) => {
         
         return Object.keys(tableData[0])
     }
-    
+
     return (
         <div className="container">
             <h1>{title}</h1>
