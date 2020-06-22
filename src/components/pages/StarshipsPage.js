@@ -1,5 +1,5 @@
 import React from 'react';
-import PageTemplate from '../components/common/PageTemplate';
+import PageTemplate from '../common/PageTemplate';
 
 const data = [
     {
@@ -66,6 +66,7 @@ function StarshipsPage() {
             title="Starships Page"
             data={data}
             tableDescriptor="Starships"
+            buttonLabel="Starship"
         />
     );
 

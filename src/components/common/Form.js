@@ -16,7 +16,10 @@ const Form = ({columns, initialData, onAddData}) => {
         data[input.name] = input.value;
         setPersonData(data)
     }
-
+    
+    if (!Object.keys(initialData).length) {
+        return null;
+    }
 
     return (
         <form>

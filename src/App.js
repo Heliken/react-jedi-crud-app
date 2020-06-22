@@ -1,13 +1,10 @@
 import React from 'react';
-import {
-    BrowserRouter as Router,
-    Switch,
-    Route,
-  } from "react-router-dom";
-import Navbar from "./components/common/Navbar";
-import PeoplePage from "./pages/PeoplePage.js";
-import PlanetsPage from "./pages/PlanetsPage.js";
-import StarshipsPage from "./pages/StarshipsPage.js";
+import { Switch, Route, Redirect} from "react-router-dom";
+import Navbar from "./components/navbar/Navbar";
+import PeoplePage from "./components/pages/PeoplePage.js";
+import PlanetsPage from "./components/pages/PlanetsPage.js";
+import StarshipsPage from "./components/pages/StarshipsPage.js";
+import NotFound from "./components/pages/NotFound.js";
 import 'bootstrap/dist/css/bootstrap.css';
 
 const routes=[
@@ -30,19 +27,19 @@ const routes=[
 
 function App() {
     return (
-        <Router>
+        <>
             <Navbar
                 routes={routes}
             />
-        
             <Switch>
                 {routes.map((route, i) => (
-                    <Route key={i} path={route.path}>
-                        {route.component}
-                    </Route>
+                    <Route key={i} path={route.path} component={route.component}/>
                 ))}
+                <Route path="/not-found" component={NotFound}/>
+                <Redirect exact from="/" to="/people" component={PeoplePage}/>
+                <Redirect to="/not-found"/>
             </Switch>
-        </Router>
+        </>
     );
 }
 
