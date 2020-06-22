@@ -1,19 +1,36 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Table from "./Table";
-import Form from "./Form";
+import Button from "./Button";
+import { Link } from "react-router-dom";
 
-const PageTemplate = ({title, data, tableDescriptor}) => {
+const PageTemplate = ({title, tableDescriptor, buttonLabel, apiCallFunc}) => {
     
-
-    const [tableData, setData] = useState(data);
-
+    const [tableData, setData] = useState([]);
+    const lowerCaseDescriptor = tableDescriptor.toLowerCase();
+    useEffect( () => {
+        const localData=JSON.parse(localStorage.getItem(lowerCaseDescriptor));
+        if(localData !== null){
+            setData(localData);
+        } else{
+            const getData = async () => {
+                const data = await apiCallFunc();
+                localStorage.setItem(lowerCaseDescriptor,JSON.stringify(data));
+                setData(data);
+                
+            }
+            getData();
+        }
+    }, [apiCallFunc, lowerCaseDescriptor, tableDescriptor])
+    /*
     const handleAddUnit = (personData) => {
         const data = [...tableData, personData];
         setData(data)
     }
-
+    */
     const handleRemoveUnit = (item) => {
-        let data = tableData.filter(row => row.id !== item.id);
+        const localData = JSON.parse(localStorage.getItem(lowerCaseDescriptor));
+        let data = localData.filter(row => row.id !== item.id);
+        localStorage.setItem(lowerCaseDescriptor, JSON.stringify(data))
         setData(data);
     }
 
@@ -21,31 +38,24 @@ const PageTemplate = ({title, data, tableDescriptor}) => {
         if (!tableData.length) {
             return []
         }
+        
         return Object.keys(tableData[0])
     }
-
-    const getInitialPeopleData = () => {
-        return tableData.reduce((cols, columnName) => {
-            cols[columnName] = "";
-            return cols;
-        }, {})
-    }
-
+    
     return (
         <div className="container">
-            
+            <h1>{title}</h1>
             <Table
                 data={tableData}
                 columns={getColumnNames()}
                 tableDescriptor={tableDescriptor}
                 onRemoveData={handleRemoveUnit}
             />
-            <Form
-                initialData={getInitialPeopleData()}
-                columns={getColumnNames()}
-                onAddData={handleAddUnit}
-            />
-            
+            <Link to={`${lowerCaseDescriptor}/new`}>
+                <Button label={`Add ${buttonLabel}`} classes="alert alert-danger" 
+                >
+                </Button>
+            </Link>
         </div>
     );
 };

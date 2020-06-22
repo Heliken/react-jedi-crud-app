@@ -1,5 +1,6 @@
 import React from 'react';
 import Button from "./Button";
+import { Link } from "react-router-dom";
 
 function Table({columns, data, tableDescriptor, onRemoveData}) {
     
@@ -8,16 +9,19 @@ function Table({columns, data, tableDescriptor, onRemoveData}) {
     };
 
     const dataExists = data.length > 0 ? true : false;
-    
     function TableContent({data, dataExists}) {
        if(dataExists){
             return(
                 data.map((item, index) => (
                     <tr key={item.id}>
                         <th scope="row">{++index}</th>
-                        {columns.map(columnTitle => (
-                            <td key={item[columnTitle]+columnTitle}>{item[columnTitle]}</td>
-                        ))}
+                        {columns.map(columnTitle => {
+                            if (columnTitle === 'name'){
+                                return <td key={item[columnTitle]+columnTitle}><Link to={tableDescriptor.toLowerCase() + '/' + item.id}>{item[columnTitle]}</Link></td>
+                            } else {
+                                return <td key={item[columnTitle]+columnTitle}>{item[columnTitle]}</td>
+                            }
+                        })}
                         <td>
                             <Button
                                 label="Delete"
